@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MTMWPL.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="MTMWPLStoreContainer">
+    <EntitySet Name="Orders" EntityType="MTMWPL.Store.Orders" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Items" EntityType="MTMWPL.Store.Items" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="OrderItems" EntityType="MTMWPL.Store.OrderItems" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="OrderOrderItem" Association="MTMWPL.Store.OrderOrderItem">
+      <End Role="Order" EntitySet="Orders" />
+      <End Role="OrderItem" EntitySet="OrderItems" />
+    </AssociationSet>
+    <AssociationSet Name="ItemOrderItem" Association="MTMWPL.Store.ItemOrderItem">
+      <End Role="Item" EntitySet="Items" />
+      <End Role="OrderItem" EntitySet="OrderItems" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Orders">
+    <Key>
+      <PropertyRef Name="OrderId" />
+    </Key>
+    <Property Name="OrderId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="OrderDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Items">
+    <Key>
+      <PropertyRef Name="SKU" />
+    </Key>
+    <Property Name="SKU" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Price" Type="decimal" Nullable="false" />
+  </EntityType>
+  <EntityType Name="OrderItems">
+    <Key>
+      <PropertyRef Name="ItemSKU" />
+      <PropertyRef Name="OrderOrderId" />
+    </Key>
+    <Property Name="Count" Type="int" Nullable="false" />
+    <Property Name="OrderOrderId" Type="int" Nullable="false" />
+    <Property Name="ItemSKU" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="OrderOrderItem">
+    <End Role="Order" Type="MTMWPL.Store.Orders" Multiplicity="1" />
+    <End Role="OrderItem" Type="MTMWPL.Store.OrderItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Order">
+        <PropertyRef Name="OrderId" />
+      </Principal>
+      <Dependent Role="OrderItem">
+        <PropertyRef Name="OrderOrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ItemOrderItem">
+    <End Role="Item" Type="MTMWPL.Store.Items" Multiplicity="1" />
+    <End Role="OrderItem" Type="MTMWPL.Store.OrderItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="SKU" />
+      </Principal>
+      <Dependent Role="OrderItem">
+        <PropertyRef Name="ItemSKU" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="MTMWPL" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="MTMWPLContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Orders" EntityType="MTMWPL.Order" />
+          <EntitySet Name="Items" EntityType="MTMWPL.Item" />
+          <EntitySet Name="OrderItems" EntityType="MTMWPL.OrderItem" />
+          <AssociationSet Name="OrderOrderItem" Association="MTMWPL.OrderOrderItem">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="OrderItem" EntitySet="OrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="ItemOrderItem" Association="MTMWPL.ItemOrderItem">
+            <End Role="Item" EntitySet="Items" />
+            <End Role="OrderItem" EntitySet="OrderItems" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="OrderId" />
+          </Key>
+          <Property Name="OrderId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderDate" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="OrderItems" Relationship="MTMWPL.OrderOrderItem" FromRole="Order" ToRole="OrderItem" />
+        </EntityType>
+        <EntityType Name="Item" >
+          <Key>
+            <PropertyRef Name="SKU" />
+          </Key>
+          <Property Name="SKU" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" ConcurrencyMode="None" />
+          <NavigationProperty Name="OrderItems" Relationship="MTMWPL.ItemOrderItem" FromRole="Item" ToRole="OrderItem" />
+        </EntityType>
+        <EntityType Name="OrderItem" >
+          <Key>
+            <PropertyRef Name="ItemSKU" />
+            <PropertyRef Name="OrderOrderId" />
+          </Key>
+          <Property Name="Count" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Order" Relationship="MTMWPL.OrderOrderItem" FromRole="OrderItem" ToRole="Order" />
+          <Property Name="OrderOrderId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Item" Relationship="MTMWPL.ItemOrderItem" FromRole="OrderItem" ToRole="Item" />
+          <Property Name="ItemSKU" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="OrderOrderItem">
+          <End Type="MTMWPL.Order" Role="Order" Multiplicity="1" />
+          <End Type="MTMWPL.OrderItem" Role="OrderItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="OrderId" />
+            </Principal>
+            <Dependent Role="OrderItem">
+              <PropertyRef Name="OrderOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ItemOrderItem">
+          <End Type="MTMWPL.Item" Role="Item" Multiplicity="1" />
+          <End Type="MTMWPL.OrderItem" Role="OrderItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="SKU" />
+            </Principal>
+            <Dependent Role="OrderItem">
+              <PropertyRef Name="ItemSKU" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MTMWPLStoreContainer" CdmEntityContainer="MTMWPLContainer">
+    <EntitySetMapping Name="Orders">
+      <EntityTypeMapping TypeName="IsTypeOf(MTMWPL.Order)">
+        <MappingFragment StoreEntitySet="Orders">
+          <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+          <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Items">
+      <EntityTypeMapping TypeName="IsTypeOf(MTMWPL.Item)">
+        <MappingFragment StoreEntitySet="Items">
+          <ScalarProperty Name="SKU" ColumnName="SKU" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OrderItems">
+      <EntityTypeMapping TypeName="IsTypeOf(MTMWPL.OrderItem)">
+        <MappingFragment StoreEntitySet="OrderItems">
+          <ScalarProperty Name="ItemSKU" ColumnName="ItemSKU" />
+          <ScalarProperty Name="OrderOrderId" ColumnName="OrderOrderId" />
+          <ScalarProperty Name="Count" ColumnName="Count" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

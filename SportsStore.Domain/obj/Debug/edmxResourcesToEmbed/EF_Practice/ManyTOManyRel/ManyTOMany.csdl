@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="ManyTOMany" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+  <EntityContainer Name="ManyTOManyContainer" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Albums" EntityType="ManyTOMany.Album" />
+    <EntitySet Name="Artists" EntityType="ManyTOMany.Artist" />
+    <AssociationSet Name="AlbumArtist" Association="ManyTOMany.AlbumArtist">
+      <End Role="Album" EntitySet="Albums" />
+      <End Role="Artist" EntitySet="Artists" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Album">
+    <Key>
+      <PropertyRef Name="AlbumID" />
+    </Key>
+    <Property Name="AlbumID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="AlbumName" Type="String" Nullable="false" />
+    <NavigationProperty Name="Artists" Relationship="ManyTOMany.AlbumArtist" FromRole="Album" ToRole="Artist" />
+  </EntityType>
+  <EntityType Name="Artist">
+    <Key>
+      <PropertyRef Name="ArtistID" />
+    </Key>
+    <Property Name="ArtistID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" Nullable="false" />
+    <Property Name="MiddleName" Type="String" Nullable="false" />
+    <Property Name="LastName" Type="String" Nullable="false" />
+    <NavigationProperty Name="Albums" Relationship="ManyTOMany.AlbumArtist" FromRole="Artist" ToRole="Album" />
+  </EntityType>
+  <Association Name="AlbumArtist">
+    <End Type="ManyTOMany.Album" Role="Album" Multiplicity="*" />
+    <End Type="ManyTOMany.Artist" Role="Artist" Multiplicity="*" />
+  </Association>
+</Schema>

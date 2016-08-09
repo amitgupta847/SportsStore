@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MTMWPL.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="MTMWPLStoreContainer">
+    <EntitySet Name="Orders" EntityType="MTMWPL.Store.Orders" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Items" EntityType="MTMWPL.Store.Items" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="OrderItems" EntityType="MTMWPL.Store.OrderItems" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="OrderOrderItem" Association="MTMWPL.Store.OrderOrderItem">
+      <End Role="Order" EntitySet="Orders" />
+      <End Role="OrderItem" EntitySet="OrderItems" />
+    </AssociationSet>
+    <AssociationSet Name="ItemOrderItem" Association="MTMWPL.Store.ItemOrderItem">
+      <End Role="Item" EntitySet="Items" />
+      <End Role="OrderItem" EntitySet="OrderItems" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Orders">
+    <Key>
+      <PropertyRef Name="OrderId" />
+    </Key>
+    <Property Name="OrderId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="OrderDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Items">
+    <Key>
+      <PropertyRef Name="SKU" />
+    </Key>
+    <Property Name="SKU" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Price" Type="decimal" Nullable="false" />
+  </EntityType>
+  <EntityType Name="OrderItems">
+    <Key>
+      <PropertyRef Name="ItemSKU" />
+      <PropertyRef Name="OrderOrderId" />
+    </Key>
+    <Property Name="Count" Type="int" Nullable="false" />
+    <Property Name="OrderOrderId" Type="int" Nullable="false" />
+    <Property Name="ItemSKU" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="OrderOrderItem">
+    <End Role="Order" Type="MTMWPL.Store.Orders" Multiplicity="1" />
+    <End Role="OrderItem" Type="MTMWPL.Store.OrderItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Order">
+        <PropertyRef Name="OrderId" />
+      </Principal>
+      <Dependent Role="OrderItem">
+        <PropertyRef Name="OrderOrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ItemOrderItem">
+    <End Role="Item" Type="MTMWPL.Store.Items" Multiplicity="1" />
+    <End Role="OrderItem" Type="MTMWPL.Store.OrderItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="SKU" />
+      </Principal>
+      <Dependent Role="OrderItem">
+        <PropertyRef Name="ItemSKU" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

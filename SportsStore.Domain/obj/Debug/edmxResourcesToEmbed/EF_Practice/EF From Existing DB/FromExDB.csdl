@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SportStoreFromDB" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="OrderLine">
+    <Key>
+      <PropertyRef Name="OrderLineId" />
+    </Key>
+    <Property Name="OrderLineId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Quantity" Type="Int32" Nullable="false" />
+    <Property Name="Product_ProductID" Type="Int32" />
+    <Property Name="Order_OrderId" Type="Int32" />
+    <NavigationProperty Name="Order" Relationship="Self.FK_dbo_OrderLines_dbo_Orders_Order_OrderId" FromRole="OrderLines" ToRole="Orders" />
+    <NavigationProperty Name="Product" Relationship="Self.FK_dbo_OrderLines_dbo_Products_Product_ProductID" FromRole="OrderLines" ToRole="Products" />
+  </EntityType>
+  <EntityType Name="Order">
+    <Key>
+      <PropertyRef Name="OrderId" />
+    </Key>
+    <Property Name="OrderId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Line1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Line2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Line3" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="City" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="State" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="GiftWrap" Type="Boolean" Nullable="false" />
+    <Property Name="Dispatched" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="OrderLines" Relationship="Self.FK_dbo_OrderLines_dbo_Orders_Order_OrderId" FromRole="Orders" ToRole="OrderLines" />
+  </EntityType>
+  <EntityType Name="Product">
+    <Key>
+      <PropertyRef Name="ProductID" />
+    </Key>
+    <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Price" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+    <NavigationProperty Name="OrderLines" Relationship="Self.FK_dbo_OrderLines_dbo_Products_Product_ProductID" FromRole="Products" ToRole="OrderLines" />
+  </EntityType>
+  <Association Name="FK_dbo_OrderLines_dbo_Orders_Order_OrderId">
+    <End Role="Orders" Type="Self.Order" Multiplicity="0..1" />
+    <End Role="OrderLines" Type="Self.OrderLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Orders">
+        <PropertyRef Name="OrderId" />
+      </Principal>
+      <Dependent Role="OrderLines">
+        <PropertyRef Name="Order_OrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_OrderLines_dbo_Products_Product_ProductID">
+    <End Role="Products" Type="Self.Product" Multiplicity="0..1" />
+    <End Role="OrderLines" Type="Self.OrderLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="ProductID" />
+      </Principal>
+      <Dependent Role="OrderLines">
+        <PropertyRef Name="Product_ProductID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SportStoreEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="OrderLines" EntityType="Self.OrderLine" />
+    <EntitySet Name="Orders" EntityType="Self.Order" />
+    <EntitySet Name="Products" EntityType="Self.Product" />
+    <AssociationSet Name="FK_dbo_OrderLines_dbo_Orders_Order_OrderId" Association="Self.FK_dbo_OrderLines_dbo_Orders_Order_OrderId">
+      <End Role="Orders" EntitySet="Orders" />
+      <End Role="OrderLines" EntitySet="OrderLines" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_OrderLines_dbo_Products_Product_ProductID" Association="Self.FK_dbo_OrderLines_dbo_Products_Product_ProductID">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="OrderLines" EntitySet="OrderLines" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
